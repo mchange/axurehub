@@ -24,7 +24,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = 'a1(hq2%zw4cSp9wqo2yx6@r^)$5@qpze&a*g-2751^tetc&kv8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # 生产环境修改此处
 ALLOWED_HOSTS = ['*']
@@ -77,10 +77,13 @@ WSGI_APPLICATION = 'axurehub.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+
+DB_DIR = os.path.join(BASE_DIR, 'db')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(DB_DIR, 'db.sqlite3'),
     }
 }
 
