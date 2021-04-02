@@ -1,17 +1,18 @@
 from django.db import models
 from django.utils.safestring import mark_safe
+from datetime import datetime
 
 # Create your models here.
 
 class Prototype(models.Model):
     name = models.CharField(verbose_name='原型名称', max_length=50)
     BU_OPTION = (
-        ('0', '业务线1'),
-        ('1', '业务线2'),
-        ('2', '业务线3'),
-        ('3', '业务线4'),
-        ('4', '业务线5'),
-        ('5', '业务线6'),
+        ('0', '趣生财'),
+        ('1', '信汇通'),
+        ('2', '收单协作'),
+        ('3', '收单传统'),
+        ('4', '互联网支付'),
+        ('5', '其他'),
     )
     bu = models.CharField(
         verbose_name='业务线',
@@ -20,7 +21,7 @@ class Prototype(models.Model):
         default=0
     )
 
-    create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now, blank=False)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
 
     class Meta:
