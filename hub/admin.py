@@ -13,12 +13,22 @@ import time
 
 # Register your models here.
 
+class TagAdmin(admin.ModelAdmin):
+
+    search_fields = ['name']
+
+
+class BuAdmin(admin.ModelAdmin):
+
+    search_fields = ['name']
+
+
 class PrototypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'bu', 'create_time', 'update_time', 'get_view_url')
+    list_display = ('name', 'bu', 'get_resource_no', 'get_tags', 'create_time', 'update_time', 'get_view_url')
 
     search_fields = ['name', 'bu']
 
-    list_filter = [ 'bu']
+    list_filter = [ 'bu__name', 'tags__name']
 
 
 class ResourceAdmin(admin.ModelAdmin):
@@ -47,10 +57,14 @@ class ResourceAdmin(admin.ModelAdmin):
             shutil.rmtree(settings.MEDIA_ROOT)
 
 
-
-
 admin.site.register(models.Prototype, PrototypeAdmin)
 
 admin.site.register(models.Resource, ResourceAdmin)
+
+admin.site.register(models.Tag, TagAdmin)
+
+admin.site.register(models.Bu, BuAdmin)
+
+
 
 admin.site.disable_action('delete_selected')

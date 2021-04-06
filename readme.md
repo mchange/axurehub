@@ -60,23 +60,3 @@ python manage.py createsuperuser
 # 修改管理员密码
 python manage.py changepassword ${username}
 ```
-
-3. 修改业务线
-
-修改文件“hub > models.py > BU_OPTION”
-
-```
-BU_OPTION = (
-    ('0', '业务线1'),
-    ('1', '业务线2'),
-    ('2', '业务线3'),
-    ('3', '业务线4'),
-    ('4', '业务线5'),
-    ('5', '业务线6'),
-)
-```
-然后执行命令：
-```
-python manage.py makemigrations
-python manage.py migrate   
-```
