@@ -59,10 +59,12 @@ class Prototype(models.Model):
     name = models.CharField(verbose_name='原型名称', max_length=50)
     bu = models.ForeignKey(Bu, on_delete=models.DO_NOTHING, verbose_name="业务线")
     resource = models.ForeignKey(Resource, on_delete=models.DO_NOTHING, verbose_name="资源")
-    tags = models.ManyToManyField(Tag, verbose_name="标签")
+    tags = models.ManyToManyField(Tag, verbose_name="标签", blank = True, null = True)
 
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now, blank=False)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
+
+    remark = models.TextField(verbose_name='备注', blank = True)
 
     class Meta:
         verbose_name = u'需求原型'
