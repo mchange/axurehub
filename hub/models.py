@@ -26,7 +26,7 @@ class Resource(models.Model):
         return str(self.no)
     
     def get_view_url(self):
-        href = '/www/' + str(self.no) + '/' + self.path.name.split("/")[1].split(".")[0] + "/start.html"
+        href = '/www/' + str(self.no) + '/' + self.path.name.split("/")[1].split(".")[0] + "/index.html"
         return mark_safe('<a href="' + href + '" target="_blank">预览</a>')
 
     get_view_url.short_description = u'预览'
