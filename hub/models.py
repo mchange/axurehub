@@ -2,14 +2,20 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from datetime import datetime
 from django.utils.html import format_html_join
+import time
 # Create your models here.
+def prd_directory_path(instance, filename):
+    timestamp = str(int(round(time.time() * 1000)))
+    # file will be uploaded to MEDIA_ROOT/PRD_<id>/<filename>
+    return 'PRD_{0}/{1}'.format(timestamp, filename)
 
 # 原型托管资源
 class Resource(models.Model):
     no = models.BigAutoField(verbose_name='编号', primary_key=True)
-    path = models.FileField(verbose_name='存储路径', upload_to='file')
+    path = models.FileField(verbose_name='存储路径', upload_to=prd_directory_path)
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
+    url = models.CharField(verbose_name='访问路径', max_length=500, blank=True, null=True)
     
     STATUS = (
         ('0', '正常'),
@@ -26,8 +32,10 @@ class Resource(models.Model):
         return str(self.no)
     
     def get_view_url(self):
-        href = '/www/' + str(self.no) + '/' + self.path.name.split("/")[1].split(".")[0] + "/start.html"
-        return mark_safe('<a href="' + href + '" target="_blank">预览</a>')
+        # print(self.path.name)
+        # href = '' #'/www/' + str(self.no) + '/' + self.path.name.split("/")[1].split(".")[0] + "/index.html"
+        href = self.url if  self.url else ''
+        return mark_safe('<a href="' + href+ '" target="_blank">预览</a>')
 
     get_view_url.short_description = u'预览'
     
@@ -54,17 +62,19 @@ class Bu(models.Model):
         verbose_name = u'业务线'
         verbose_name_plural = u'业务线'
 
+
+
 # 需求原型
 class Prototype(models.Model):
     name = models.CharField(verbose_name='原型名称', max_length=50)
     bu = models.ForeignKey(Bu, on_delete=models.DO_NOTHING, verbose_name="业务线")
-    resource = models.ForeignKey(Resource, on_delete=models.DO_NOTHING, verbose_name="资源")
+    resource = models.ForeignKey(Resource, on_delete=models.DO_NOTHING, verbose_name="原型")
     tags = models.ManyToManyField(Tag, verbose_name="标签", blank = True, null = True)
-
+    attachment = models.FileField(verbose_name='UI附件', upload_to='attachment', blank = True, null = True)
     create_time = models.DateTimeField(verbose_name='创建时间', default=datetime.now, blank=False)
     update_time = models.DateTimeField(verbose_name='更新时间', auto_now=True)
 
-    remark = models.TextField(verbose_name='备注', blank = True)
+    remark = models.TextField(verbose_name='备注', blank = True, null = True)
 
     class Meta:
         verbose_name = u'需求原型'

@@ -26,4 +26,5 @@ urlpatterns = [
 ]
 
 # 配置url 当我们访问 settings.WWW_URL中的路径时，static会通过document_root去寻找对应的文件
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.WWW_URL, document_root=settings.WWW_ROOT)

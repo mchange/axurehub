@@ -24,7 +24,7 @@ class BuAdmin(admin.ModelAdmin):
 
 
 class PrototypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'bu', 'get_resource_no', 'get_tags', 'create_time', 'update_time', 'get_view_url')
+    list_display = ('name', 'bu', 'get_resource_no', 'get_tags', 'create_time', 'update_time', 'attachment', 'get_view_url')
 
     search_fields = ['name', 'bu']
 
@@ -35,6 +35,7 @@ class ResourceAdmin(admin.ModelAdmin):
     list_display = ('no', 'path', 'status', 'create_time', 'update_time', 'get_view_url')
 
     list_filter = ['status', 'prototype__name' ]
+    exclude = ('url',)
 
     def save_model(self, request, obj, form, change):
         if form.is_valid():
@@ -42,20 +43,27 @@ class ResourceAdmin(admin.ModelAdmin):
             timestamp = int(round(time.time() * 1000))
             obj.no = timestamp
             if form.cleaned_data['path'] is not None:
+                print(form.cleaned_data['path'])
                 no = str(timestamp)
                 zip = zipfile.ZipFile(form.cleaned_data['path'])
                 www_dir = os.path.join(settings.WWW_ROOT, no)
                 os.makedirs(www_dir)
                 if zip:
+                    root_dir = None
                     for file in zip.namelist():
+                        if root_dir is None:
+                            root_dir = file
                         zip.extract(file, settings.MEDIA_ROOT)
                         # 处理加压后中文乱码
                         right_file = file.encode('cp437').decode('utf-8')
                         shutil.move(os.path.join(settings.MEDIA_ROOT, file), os.path.join(www_dir, right_file))
+                    shutil.rmtree(os.path.join(settings.MEDIA_ROOT, root_dir))
+                    obj.url = settings.WWW_URL + no + "/" + str(zip.filename).split(".")[0] + "/index.html"
+                    print(obj.url)
                 zip.close()
+                
             super().save_model(request, obj, form, change)
-            shutil.rmtree(settings.MEDIA_ROOT)
-
+            
 
 admin.site.register(models.Prototype, PrototypeAdmin)
 
