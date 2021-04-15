@@ -60,3 +60,20 @@ python manage.py createsuperuser
 # 修改管理员密码
 python manage.py changepassword ${username}
 ```
+
+#  makemigrations 不生效问题
+
+连接数据库：
+sudo sqlite3 db.sqlite3 
+或者
+python manage.py dbshell 
+
+进到数据库中，执行：
+delete from django_migrations where app='your_appname';
+
+再次执行变更：
+python manage.py makemigrations
+python manage.py migrate 
+
+
+
