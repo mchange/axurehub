@@ -48,14 +48,20 @@ class ResourceAdmin(admin.ModelAdmin):
                 zip = zipfile.ZipFile(form.cleaned_data['path'])
                 www_dir = os.path.join(settings.WWW_ROOT, no)
                 os.makedirs(www_dir)
+                target_encoding = 'utf-8'
                 if zip:
                     root_dir = None
                     for file in zip.namelist():
+                        if file.startswith('.') or file.startswith('__MACOSX'):
+                            continue
                         if root_dir is None:
                             root_dir = file
                         zip.extract(file, settings.MEDIA_ROOT)
                         # 处理加压后中文乱码
-                        right_file = file.encode('cp437').decode('utf-8')
+                        try:
+                            right_file = file.encode('cp437').decode('utf-8')
+                        except:
+                            right_file = file.encode('cp437').decode('gbk')
                         shutil.move(os.path.join(settings.MEDIA_ROOT, file), os.path.join(www_dir, right_file))
                     shutil.rmtree(os.path.join(settings.MEDIA_ROOT, root_dir))
                     obj.url = settings.WWW_URL + no + "/" + str(zip.filename).split(".")[0] + "/index.html"
