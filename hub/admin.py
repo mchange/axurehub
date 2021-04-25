@@ -64,7 +64,9 @@ class ResourceAdmin(admin.ModelAdmin):
                             right_file = file.encode('cp437').decode('gbk')
                         shutil.move(os.path.join(settings.MEDIA_ROOT, file), os.path.join(www_dir, right_file))
                     shutil.rmtree(os.path.join(settings.MEDIA_ROOT, root_dir))
-                    obj.url = settings.WWW_URL + no + "/" + str(zip.filename).split(".")[0] + "/index.html"
+                    path_name = str(zip.filename)
+                    path_name = path_name[:path_name.rfind(".")]
+                    obj.url = settings.WWW_URL + no + "/" + path_name + "/index.html"
                     print(obj.url)
                 zip.close()
                 
