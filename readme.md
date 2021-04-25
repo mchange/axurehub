@@ -37,6 +37,13 @@ docker run -d -p 8000:8000 --name axurehub  axurehub
 > docker run -d -p 8000:8000 -v /Users/admin/Downloads/axurehub:/usr/src/app/www --name axurehub  axurehub
 > ```
 
+**/usr/src/app/media**: 存放上传的压缩包
+**/usr/src/app/www**: 存放解压后的web文件
+**/usr/src/app/data**: 存放数据库文件
+
+建议将以上目录都映射到宿主机。
+
+
 
 
 ## 数据操作
