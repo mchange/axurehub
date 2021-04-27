@@ -47,15 +47,17 @@ class ResourceAdmin(admin.ModelAdmin):
                 no = str(timestamp)
                 zip = zipfile.ZipFile(form.cleaned_data['path'])
                 www_dir = os.path.join(settings.WWW_ROOT, no)
-                os.makedirs(www_dir)
+                
                 target_encoding = 'utf-8'
                 if zip:
-                    root_dir = None
+                    zip_file_name = str(zip.filename)
+                    zip_file_name = zip_file_name[:zip_file_name.rfind(".")]
+                    # 托管路径： www/压缩包名称/压缩包文件*
+                    www_dir = os.path.join(www_dir, zip_file_name)
+                    os.makedirs(www_dir)
                     for file in zip.namelist():
                         if file.startswith('.') or file.startswith('__MACOSX'):
                             continue
-                        if root_dir is None:
-                            root_dir = file
                         zip.extract(file, settings.MEDIA_ROOT)
                         # 处理加压后中文乱码
                         try:
@@ -63,10 +65,8 @@ class ResourceAdmin(admin.ModelAdmin):
                         except:
                             right_file = file.encode('cp437').decode('gbk')
                         shutil.move(os.path.join(settings.MEDIA_ROOT, file), os.path.join(www_dir, right_file))
-                    shutil.rmtree(os.path.join(settings.MEDIA_ROOT, root_dir))
-                    path_name = str(zip.filename)
-                    path_name = path_name[:path_name.rfind(".")]
-                    obj.url = settings.WWW_URL + no + "/" + path_name + "/index.html"
+
+                    obj.url = settings.WWW_URL + no + "/" + zip_file_name + "/index.html"
                     print(obj.url)
                 zip.close()
                 
